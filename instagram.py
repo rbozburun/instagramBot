@@ -277,7 +277,15 @@ class Instagram(object):
             toUnFollow = input("Takipten çıkmak istediğiniz kişinin username'i: ")
             self.startBrowser()
             self.browser.get("https://www.instagram.com/{}/".format(toUnFollow))
-            print()
+            self.unfollowBtn = self.browser.find_element_by_css_selector("#react-root > section > main > div > header > section > div.nZSzR > div.Igw0E.IwRSH.eGOV_._4EzTm > span > span.vBF20._1OSdk > button")
+            self.unfollowBtn.click()
+            time.sleep(0.5)
+            lastunFollowBtn = self.browser.find_element_by_css_selector("body > div.RnEpo.Yx5HN > div > div > div.mt3GC > button.aOOlW.-Cab_")
+            lastunFollowBtn.click()
+            print(toUnFollow + " kişisi takipten çıkıldı.")
+            self.browser.close()
+            
+
 
         if selection ==15:
             toFollow = input("Takip edilecek kişinin username'i: ") #Takip edilecek kişi - Arama çubuğuna yaz
@@ -316,23 +324,8 @@ class Instagram(object):
         • Bir videoyu indirme
         • Tüm paylaşımları indirme
          """
-    def download_picture(self):
-	    print()
-
-    def download_video(self):
-        print()
-
-    def download_all_shared_posts(self):
-        print()
-            
-    def dwn_all_pics_choosen_user(self):
-        print()
-            
-    def dwm_all_vids_choosen_user(self):
-        print()
 
         
-
     #def furkan(self):
 
         """
@@ -341,17 +334,7 @@ class Instagram(object):
         • Belirli bir paylaşımı beğenme
         • Belirli bir paylaşımı beğenmekten vazgeçme
         """
-    def like_all_posts(self):
-        print()
 
-    def unlike_all_posts(self):
-        print()
-
-    def like_in_particular(self):
-        print()
-
-    def unlike_in_particular(self):
-        print()    
 
 
     #def nesim(self):
@@ -361,39 +344,6 @@ class Instagram(object):
         • Bir kullanıcının engelini kaldırma
         • Postlara yorum yapma
          """
-        
-    def block_someone (self):
-	    print()
-
-    def remove_blocking(self):
-        print()
-
-    def comment(self):
-        print()       
-        print()
-
-   
-   # def resul(self,browser):
-        """
-        • Bir kullanıcıyı takip etme
-        • Bir kullanıcıyı takipten çıkma
-        • Kullanıcının takip ettiği tüm kullanıcıları takip etme
-        • Seni takip etmeyenleri takipten çıkma
-        """
-        
-
-    
-        
-             
-    def unfolow_someone(self):
-        print()
-
-    def follow_all_followings_of_someone(self):
-         print()
-
-    def unfollow_who_doesnt_folow_you(self):
-        print()       
-
 
 
 
