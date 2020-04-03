@@ -1,7 +1,9 @@
 from selenium import webdriver
 import time
-from termcolor import colored
+from termcolor import colored,cprint
 import getpass #getpass.getpass(prompt='Password: ', stream=None) ile komut satırında gözükmeyen şifre alınıyor.
+from selenium.webdriver.common.keys import Keys #takipçi dialogunda scroll bar hareketi
+import re # Verilen markerler arasındaki stringi bulmak için
 
 
 
@@ -24,9 +26,9 @@ class Instagram(object):
         print("[+] 10. Bir kulanıcının engelini kaldır")
         print(self.color("[+] 11. Anasayfadaki tüm postlara yorum yap ",2))
         print(self.color("[+] 12. Seni takip etmeyenleri takipten çık ",1))
-        print(self.color("[+] 13. Bir kullanıcının takip ettiği tüm kullanıcıları takip et ",3))
+        print(self.color("[+] 13. Bir kullanıcının takip ettiği tüm kullanıcıları takip et ",3)) # OK
         print(self.color("[+] 14. Bir kulanıcıyı takipten çık",1))
-        print("[+] 15. Bir kullanıcıyı takip et ")
+        print("[+] 15. Bir kullanıcıyı takip et ") # OK
         print()
         print("*********************")
 
@@ -66,6 +68,7 @@ class Instagram(object):
 
         self.login = self.browser.find_element_by_xpath("//*[@id='react-root']/section/main/div/article/div/div[1]/div/form/div[4]/button/div")
         self.login.click()
+        time.sleep(2)
 
 
    
@@ -116,9 +119,73 @@ class Instagram(object):
         
         if selection ==12:
             print()
-        
+    
         if selection ==13:
-            print()
+            person = input("Takip ettiği kişileri takip etmek istediğiniz kişinin kullanıcı adı: ")
+            self.startBrowser()
+            time.sleep(2)
+            self.browser.get("https://www.instagram.com/{}/".format(person))
+            time.sleep(1)
+
+            numFollows=(self.browser.find_element_by_xpath("//li[2]/a/span").text) 
+            numFollowings=int(self.browser.find_element_by_xpath("//li[3]/a/span").text)
+            print("Takipçi sayısı: "+(numFollows))
+            print("Takip edilen kişi sayısı: "+str(numFollowings))
+            
+            followersLink = self.browser.find_element_by_css_selector(' ul > li:nth-child(3) > a')
+            followersLink.click()
+            time.sleep(2)
+            followingsDialog = self.browser.find_element_by_css_selector('div[role=\'dialog\'] ul')
+            numberOfFollowingsInList = len(followingsDialog.find_elements_by_css_selector('li'))
+        
+            followingsDialog.click()
+            actionChain = webdriver.ActionChains(self.browser)
+            while (numberOfFollowingsInList < int(numFollowings)):
+                actionChain.key_down(Keys.SPACE).key_up(Keys.SPACE).perform()
+                time.sleep(0.7)
+                followingsDialog.click()
+                numberOfFollowingsInList = len(followingsDialog.find_elements_by_css_selector('li'))
+            
+            
+            count=1
+            followingsList = []
+            for user in followingsDialog.find_elements_by_css_selector('li'):
+                userLink = user.find_element_by_css_selector('a').get_attribute('href')
+                countPrint = "{}. takipçi: ".format(count)
+                cprint(countPrint+userLink,'blue'.format(count))
+                count +=1
+                followingsList.append(userLink)
+                if (len(followingsList) == numFollowings):
+                    break
+
+            for following in followingsList:
+                pattern = ".com/(.*?)/"
+                username = re.search(pattern,following).group(1)
+                print("Kullanıcı: "+username)
+                self.browser.get(following)
+                #Gizli Hesap Takibi
+                if "This Account is Private" in self.browser.page_source:
+                    follow_btn = self.browser.find_element_by_css_selector("button.BY3EC")
+                    if follow_btn.text == 'Follow' or follow_btn.text == 'Follow Back':
+                        follow_btn.click()
+                        print("{} kullanıcısına başarıyla takip isteği gönderildi.".format(username))
+
+                    elif follow_btn.text == 'Requested':
+                        print("{} kullancısına zaten takip isteği gönderilmiş.".format(username))
+
+                    else:
+                        print("{} kullancısı zaten takip ediliyor".format(username))
+
+                #Herkese açık hesap takibi
+                else:
+                    follow_btn = self.browser.find_element_by_css_selector("button._5f5mN")
+                    if follow_btn.text == 'Follow' or follow_btn.text == 'Follow Back':
+                        follow_btn.click()
+                        print("{} kullanıcısı başarıyla takip edilmeye başlandı.".format(username))
+
+                    else:
+                        print("{} kullancısı zaten takip ediliyor".format(username))
+            print("İşlem başarıyla tamamlandı !")
 
         if selection ==14:
             toUnFollow = input("Takipten çıkmak istediğiniz kişinin username'i: ")
@@ -154,40 +221,6 @@ class Instagram(object):
 
                 else:
                     print("{} kullancısı zaten takip ediliyor".format(toFollow))
-
-
-
-
-
-
-
-            #Herkese Açık Hesap Takibi
-
-
-
-            #Daha önce takip isteği gönderilmiş hesap takibi
-
-                
-           #Zaten takip edilen bir hesaba takip isteği
-
-            #Kullanıcı bulanamadı
-
-
-
-
-            
-            
-
-                
-
-
-
-            #Herkese açık hesap takibi
-
-
-            #Zaten takiptesin
-               
-
 
 
 
