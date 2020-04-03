@@ -4,6 +4,7 @@ from termcolor import colored,cprint
 import getpass #getpass.getpass(prompt='Password: ', stream=None) ile komut satırında gözükmeyen şifre alınıyor.
 from selenium.webdriver.common.keys import Keys #takipçi dialogunda scroll bar hareketi
 import re # Verilen markerler arasındaki stringi bulmak için
+import random # Rastgele süre ayarlamak için kullanıldı 
 
 
 
@@ -68,7 +69,7 @@ class Instagram(object):
 
         self.login = self.browser.find_element_by_xpath("//*[@id='react-root']/section/main/div/article/div/div[1]/div/form/div[4]/button/div")
         self.login.click()
-        time.sleep(2)
+        time.sleep(5)
 
 
    
@@ -118,7 +119,92 @@ class Instagram(object):
             print()
         
         if selection ==12:
-            print()
+            self.randomTime = random.uniform(1.50, 3.14)
+            self.startBrowser()
+            self.browser.get("https://instagram.com/{}/".format(self.username_input))
+            time.sleep(1.5)
+            numFollowers=(self.browser.find_element_by_xpath("//li[2]/a/span").text) 
+            numFollowings=int(self.browser.find_element_by_xpath("//li[3]/a/span").text)
+            print("Takipçi sayısı: "+(numFollowers))
+            print("Takip edilen kişi sayısı: "+str(numFollowings))
+
+# -- Takip edilenlerin listesi
+            followingsLink = self.browser.find_element_by_css_selector(' ul > li:nth-child(3) > a')
+            followingsLink.click()
+            time.sleep(2)
+            followingsDialog = self.browser.find_element_by_css_selector('div[role=\'dialog\'] ul')
+            numberOfFollowingsInList = len(followingsDialog.find_elements_by_css_selector('li'))
+        
+            followingsDialog.click()
+            actionChain = webdriver.ActionChains(self.browser)
+            while (numberOfFollowingsInList < int(numFollowings)):
+                actionChain.key_down(Keys.SPACE).key_up(Keys.SPACE).perform()
+                time.sleep(0.7)
+                followingsDialog.click()
+                numberOfFollowingsInList = len(followingsDialog.find_elements_by_css_selector('li'))
+            
+            
+            count=1
+            followingsList = []
+            for user in followingsDialog.find_elements_by_css_selector('li'):
+                userLink = user.find_element_by_css_selector('a').get_attribute('href')
+                countPrint = "{}. takip edilen: ".format(count)
+                cprint(countPrint+userLink,'blue'.format(count))
+                count +=1
+                followingsList.append(userLink)
+                if (len(followingsList) == numFollowings):
+                    break
+            self.browser.get("https://instagram.com/{}/".format(self.username_input))
+            time.sleep(3)
+# -- Takipçi listesi
+            followersLink = self.browser.find_element_by_css_selector(' ul > li:nth-child(2) > a')
+            followersLink.click()
+            time.sleep(2)
+            followersDialog = self.browser.find_element_by_css_selector('div[role=\'dialog\'] ul')
+            numberOfFollowingsInList = len(followersDialog.find_elements_by_css_selector('li'))
+        
+            followersDialog.click()
+            actionChain = webdriver.ActionChains(self.browser)
+            while (numberOfFollowingsInList < int(numFollowers)):
+                actionChain.key_down(Keys.SPACE).key_up(Keys.SPACE).perform()
+                time.sleep(0.7)
+                followersDialog.click()
+                numberOfFollowingsInList = len(followersDialog.find_elements_by_css_selector('li'))
+            
+            
+            count=1
+            followersList = []
+            for user in followersDialog.find_elements_by_css_selector('li'):
+                userLink = user.find_element_by_css_selector('a').get_attribute('href')
+                countPrint = "{}. takipçi: ".format(count)
+                cprint(countPrint+userLink,'blue'.format(count))
+                count +=1
+                followersList.append(userLink)
+                if (len(followersList) == numFollowers):
+                    break
+ # -- Takipten çıkma           
+            notFollowing = []
+
+            for person in followingsList:
+                if person  not in followersList:
+                    notFollowing.append(person)
+            
+            for user in notFollowing:
+                pattern = ".com/(.*?)/"
+                username = re.search(pattern,user).group(1)
+                print(username + " sizi takip etmiyor.")
+                time.sleep(0.5)
+                self.browser.get(user)
+                self.unfollowBtn = self.browser.find_element_by_css_selector("#react-root > section > main > div > header > section > div.nZSzR > div.Igw0E.IwRSH.eGOV_._4EzTm > span > span.vBF20._1OSdk > button")
+                self.unfollowBtn.click()
+                time.sleep(0.5)
+                lastunFollowBtn = self.browser.find_element_by_css_selector("body > div.RnEpo.Yx5HN > div > div > div.mt3GC > button.aOOlW.-Cab_")
+                lastunFollowBtn.click()
+                print(username + " kişisi takipten çıkıldı.")
+                time.sleep(self.randomTime)
+                
+            self.browser.close()
+            print(str(len(notFollowing)) + " kişi takipten çıkıldı.")
     
         if selection ==13:
             person = input("Takip ettiği kişileri takip etmek istediğiniz kişinin kullanıcı adı: ")
@@ -132,8 +218,8 @@ class Instagram(object):
             print("Takipçi sayısı: "+(numFollows))
             print("Takip edilen kişi sayısı: "+str(numFollowings))
             
-            followersLink = self.browser.find_element_by_css_selector(' ul > li:nth-child(3) > a')
-            followersLink.click()
+            followingsLink = self.browser.find_element_by_css_selector(' ul > li:nth-child(3) > a')
+            followingsLink.click()
             time.sleep(2)
             followingsDialog = self.browser.find_element_by_css_selector('div[role=\'dialog\'] ul')
             numberOfFollowingsInList = len(followingsDialog.find_elements_by_css_selector('li'))
