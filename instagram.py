@@ -119,7 +119,7 @@ class Instagram(object):
             print()
         
         if selection ==12:
-            self.randomTime = random.uniform(1.50, 3.14)
+            self.randomTime = random.uniform(2, 5)
             self.startBrowser()
             self.browser.get("https://instagram.com/{}/".format(self.username_input))
             time.sleep(1.5)
@@ -137,6 +137,9 @@ class Instagram(object):
         
             followingsDialog.click()
             actionChain = webdriver.ActionChains(self.browser)
+            #
+            numFollowings = 100.4
+            #
             while (numberOfFollowingsInList < int(numFollowings)):
                 actionChain.key_down(Keys.SPACE).key_up(Keys.SPACE).perform()
                 time.sleep(0.7)
@@ -195,13 +198,15 @@ class Instagram(object):
                 print(username + " sizi takip etmiyor.")
                 time.sleep(0.5)
                 self.browser.get(user)
+                time.sleep(self.randomTime)
                 self.unfollowBtn = self.browser.find_element_by_css_selector("#react-root > section > main > div > header > section > div.nZSzR > div.Igw0E.IwRSH.eGOV_._4EzTm > span > span.vBF20._1OSdk > button")
                 self.unfollowBtn.click()
                 time.sleep(0.5)
                 lastunFollowBtn = self.browser.find_element_by_css_selector("body > div.RnEpo.Yx5HN > div > div > div.mt3GC > button.aOOlW.-Cab_")
                 lastunFollowBtn.click()
-                print(username + " kişisi takipten çıkıldı.")
-                time.sleep(self.randomTime)
+                cprint(username + " kişisi takipten çıkıldı.",'green')
+                time.sleep(0.5)
+                
                 
             self.browser.close()
             print(str(len(notFollowing)) + " kişi takipten çıkıldı.")
