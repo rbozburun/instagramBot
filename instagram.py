@@ -201,11 +201,11 @@ class Instagram(object):
                 time.sleep(self.randomTime)
                 self.unfollowBtn = self.browser.find_element_by_css_selector("#react-root > section > main > div > header > section > div.nZSzR > div.Igw0E.IwRSH.eGOV_._4EzTm > span > span.vBF20._1OSdk > button")
                 self.unfollowBtn.click()
-                time.sleep(0.5)
+                time.sleep(1)
                 lastunFollowBtn = self.browser.find_element_by_css_selector("body > div.RnEpo.Yx5HN > div > div > div.mt3GC > button.aOOlW.-Cab_")
                 lastunFollowBtn.click()
                 cprint(username + " kişisi takipten çıkıldı.",'green')
-                time.sleep(0.5)
+                time.sleep(1)
                 
                 
             self.browser.close()
