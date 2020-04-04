@@ -5,6 +5,7 @@ import getpass #getpass.getpass(prompt='Password: ', stream=None) ile komut sat�
 from selenium.webdriver.common.keys import Keys #takipçi dialogunda scroll bar hareketi
 import re # Verilen markerler arasındaki stringi bulmak için
 import random # Rastgele süre ayarlamak için kullanıldı 
+import urllib.request
 
 
 
@@ -86,6 +87,16 @@ class Instagram(object):
 
     def selectFunc(self,selection):
         if selection ==1:
+            resim = input("İndirmek istediğiniz resmin linki: ")
+            self.startBrowser()
+            self.browser.get(resim)
+            img = self.browser.find_element_by_css_selector('img.FFVAD')
+            src = img.get_attribute('src')
+
+            # download the image
+            urllib.request.urlretrieve(src, "resim.jpg")
+
+
             print()
         
         if selection ==2:
