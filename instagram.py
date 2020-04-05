@@ -43,7 +43,7 @@ class Instagram(object):
 
         self.username_input = input("Kullanıcı adınız: ")
 
-        self.password_input = input("Şifreniz: ")
+        self.password_input = getpass.getpass(prompt='Password: ', stream=None)
 
         print("[*] Tarayıcı Başlatılıyor...")
         print("---------------------------")
