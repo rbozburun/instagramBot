@@ -6,11 +6,13 @@ from selenium.webdriver.common.keys import Keys #takipçi dialogunda scroll bar 
 import re # Verilen markerler arasındaki stringi bulmak için
 import random # Rastgele süre ayarlamak için kullanıldı 
 import urllib.request
+import colorama
 
 
 
 class Instagram(object):
     def __init__(self):
+        colorama.init()
         print()
         print("*********************")
         print(self.color("--- SEÇİM YAPINIZ ---",2))
@@ -90,7 +92,7 @@ class Instagram(object):
             resim = input("İndirmek istediğiniz resmin linki: ")
             self.startBrowser()
             self.browser.get(resim)
-            img = self.browser.find_element_by_css_selector('img.FFVAD')
+            img = self.browser.find_element_by_css_selector('#react-root > section > main > div > div.ltEKP > article > div._97aPb.wKWK0 > div > div > div.KL4Bh > img')
             src = img.get_attribute('src')
 
             # download the image
